@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { sendMessageToBot } from "../services/botApi";
-import { FaMoon, FaSun, FaComments } from "react-icons/fa";
+import { FaMoon, FaSun, FaComments, FaPaperPlane } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function ChatUI() {
   const [messages, setMessages] = useState([
@@ -110,8 +111,12 @@ export default function ChatUI() {
   <div className={`w-full h-screen font-['Poppins'] ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"} flex flex-col`}>
     {/* Navbar */}
     <nav className="w-full bg-blue-600 dark:bg-gray-800 text-white p-4 flex items-center gap-3 shadow-md">
-      <FaComments className="text-xl" />
-      <h1 className="text-xl font-semibold tracking-wide">ChatNusa</h1>
+      <Link to="/" className="hover:text-gray-200 transition">
+        <FaComments className="text-xl" />
+      </Link>
+      <Link to="/" className="hover:text-gray-200 transition">
+        <h1 className="text-xl font-semibold tracking-wide">ChatNusa</h1>
+      </Link>
     </nav>
 
     {/* Modal Riwayat */}
@@ -166,10 +171,11 @@ export default function ChatUI() {
             onKeyDown={(e) => e.key === "Enter" && handleSend(e)}
           />
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-2 rounded-lg transition text-sm sm:text-base whitespace-nowrap"
+            className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-all duration-300 hover:scale-105"
             onClick={handleSend}
+            aria-label="Kirim pesan"
           >
-            Kirim
+            <FaPaperPlane className="w-5 h-5" />
           </button>
         </div>
 

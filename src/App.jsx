@@ -1,11 +1,16 @@
 import React from "react";
-import ChatBot from "./components/ChatBot";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./components/LandingPage";
+import ChatUI from "./components/ChatBot";
 
 function App() {
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <ChatBot />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/chat" element={<ChatUI />} />
+      </Routes>
+    </Router>
   );
 }
 
