@@ -133,17 +133,17 @@ export default function ChatUI() {
     )}
 
     {/* Main Chat Area */}
-    <div className="flex-1 flex justify-center items-center p-2 sm:p-4">
-      <div className="w-full max-w-4xl h-full sm:h-[90%] bg-white dark:bg-gray-800 rounded-xl shadow-xl flex flex-col overflow-hidden">
+    <div className="flex-1 flex justify-center items-center p-1 sm:p-4">
+      <div className="w-full max-w-4xl h-[95%] sm:h-[90%] bg-white dark:bg-gray-800 rounded-xl shadow-xl flex flex-col overflow-hidden">
         {/* Chat content */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+        <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-4 min-h-0">
           {messages.map((msg, idx) => (
             <div
               key={idx}
               className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`whitespace-pre-line max-w-[75%] px-4 py-2 rounded-2xl text-sm leading-relaxed ${
+                className={`whitespace-pre-line max-w-[85%] sm:max-w-[75%] px-3 sm:px-4 py-2 rounded-2xl text-sm leading-relaxed ${
                   msg.sender === "user"
                     ? "bg-blue-600 text-white rounded-br-none"
                     : "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white rounded-bl-none"
@@ -157,7 +157,7 @@ export default function ChatUI() {
         </div>
 
         {/* Input box */}
-        <div className="border-t p-4 bg-gray-50 dark:bg-gray-700 flex gap-2 items-center">
+        <div className="border-t p-2 sm:p-4 bg-gray-50 dark:bg-gray-700 flex gap-2 items-center">
           <input
             className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
             placeholder="Ketik pesan..."
@@ -174,7 +174,7 @@ export default function ChatUI() {
         </div>
 
         {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 p-2 border-t bg-gray-100 dark:bg-gray-800 text-sm text-gray-700 dark:text-white">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 p-2 border-t bg-gray-100 dark:bg-gray-800 text-xs sm:text-sm text-gray-700 dark:text-white">
           <div className="flex gap-2 flex-wrap justify-center sm:justify-start">
             <button onClick={handleReset} className="hover:underline text-red-600 dark:text-red-400">
               🔄 Reset Chat
