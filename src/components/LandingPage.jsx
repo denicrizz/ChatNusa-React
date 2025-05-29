@@ -68,6 +68,12 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="text-center py-4 text-white/80 text-sm backdrop-blur-sm">
+        Dibuat dengan <span className="text-red-500 animate-pulse">❤️</span> oleh{" "}
+        <span className="font-semibold">Deni Kristanto</span>
+      </footer>
     </div>
   );
 }
