@@ -3,6 +3,26 @@ import { sendMessageToBot } from "../services/botApi";
 import { FaMoon, FaSun, FaComments, FaPaperPlane } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
+const convertLinksToAnchors = (text) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300 underline break-all"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export default function ChatUI() {
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Halo! Ada yang bisa saya bantu?" },
@@ -154,7 +174,7 @@ export default function ChatUI() {
                     : "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white rounded-bl-none"
                 }`}
               >
-                {msg.text}
+                {convertLinksToAnchors(msg.text)}
               </div>
             </div>
           ))}
