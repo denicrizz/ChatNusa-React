@@ -157,16 +157,16 @@ export default function ChatUI() {
         </div>
 
         {/* Input box */}
-        <div className="border-t p-2 sm:p-4 bg-gray-50 dark:bg-gray-700 flex gap-2 items-center">
+        <div className="border-t px-1 py-2 sm:p-4 bg-gray-50 dark:bg-gray-700 flex gap-1 sm:gap-2 items-center">
           <input
-            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
+            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
             placeholder="Ketik pesan..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend(e)}
           />
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-2 rounded-lg transition text-sm sm:text-base whitespace-nowrap"
             onClick={handleSend}
           >
             Kirim
