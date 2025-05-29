@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { sendMessageToBot } from "../services/botApi";
-import { FaMoon, FaSun, FaComments, FaPaperPlane } from "react-icons/fa";
+import { FaMoon, FaSun, FaComments, FaPaperPlane, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
 
 const convertLinksToAnchors = (text) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -165,10 +166,19 @@ export default function ChatUI() {
           {messages.map((msg, idx) => (
             <div
               key={idx}
-              className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+              className={`flex items-end gap-2 ${
+                msg.sender === "user" ? "justify-end" : "justify-start"
+              }`}
             >
+              {msg.sender === "bot" && (
+                <img
+                  src={logo}
+                  alt="Bot Avatar"
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              )}
               <div
-                className={`whitespace-pre-line max-w-[85%] sm:max-w-[75%] px-3 sm:px-4 py-2 rounded-2xl text-sm leading-relaxed ${
+                className={`whitespace-pre-line max-w-[75%] sm:max-w-[65%] px-3 sm:px-4 py-2 rounded-2xl text-sm leading-relaxed ${
                   msg.sender === "user"
                     ? "bg-blue-600 text-white rounded-br-none"
                     : "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white rounded-bl-none"
@@ -176,6 +186,11 @@ export default function ChatUI() {
               >
                 {convertLinksToAnchors(msg.text)}
               </div>
+              {msg.sender === "user" && (
+                <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                  <FaUser className="w-4 h-4" />
+                </div>
+              )}
             </div>
           ))}
           <div ref={chatEndRef} />
