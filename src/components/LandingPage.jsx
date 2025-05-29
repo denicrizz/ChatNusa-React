@@ -1,71 +1,68 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaRobot, FaSearch, FaUniversity, FaArrowRight } from "react-icons/fa";
+import { FaRobot, FaSearch, FaUniversity, FaArrowRight, FaComments } from "react-icons/fa";
 import logo from "../assets/logo.png";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+    <div className="min-h-screen bg-gradient-to-b from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
+      {/* Mobile-friendly background pattern */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
-      {/* Glowing Orbs */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      {/* Mobile-optimized glowing orbs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-10 -left-10 w-48 h-48 bg-blue-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 -right-10 w-72 h-72 bg-purple-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
-      {/* Content with increased contrast */}
       <div className="relative">
-        {/* Hero Section with Animation */}
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center animate-fade-in backdrop-blur-sm">
-            <div className="flex items-center justify-center gap-4 mb-6">
+        {/* Mobile-first Hero Section */}
+        <div className="container mx-auto px-4 pt-12 pb-8">
+          <div className="text-center backdrop-blur-sm rounded-2xl p-4">
+            <div className="flex flex-col items-center justify-center gap-4 mb-8">
               <img
                 src={logo}
                 alt="ChatNusa Logo"
-                className="w-16 h-16 rounded-full object-cover animate-fade-in"
+                className="w-24 h-24 rounded-3xl shadow-lg object-cover animate-fade-in"
               />
-              <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 dark:text-white animate-slide-down">
+              <h1 className="text-3xl sm:text-5xl font-bold text-white animate-slide-down">
                 ChatNusa
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 animate-slide-up">
+            <p className="text-lg sm:text-xl text-white/90 mb-12 animate-slide-up px-4">
               Asisten AI Universitas Nusantara PGRI Kediri
             </p>
             <Link
               to="/chat"
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all duration-300 hover:scale-105 transform"
+              className="inline-flex items-center gap-3 bg-white text-blue-600 dark:bg-gray-800 dark:text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
             >
-              Mulai Chat <FaArrowRight className="animate-bounce" />
+              <FaComments className="text-xl" />
+              Mulai Chat
             </Link>
           </div>
         </div>
 
-        {/* Features Section with Animation */}
-        <div className="bg-white dark:bg-gray-800 py-16">
+        {/* Mobile-friendly Features Section */}
+        <div className="bg-white/95 dark:bg-gray-800/95 py-12 rounded-t-[2.5rem] shadow-lg">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white animate-fade-in">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
               Fitur Utama
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <FeatureCard
+            <div className="grid gap-6">
+              <MobileFeatureCard
                 icon={<FaRobot />}
                 title="AI Assistant"
-                description="Jawaban cepat dan akurat untuk pertanyaan seputar UNP"
-                delay="delay-100"
+                description="Jawaban cepat dan akurat untuk pertanyaan seputar kampus"
               />
-              <FeatureCard
+              <MobileFeatureCard
                 icon={<FaSearch />}
                 title="Pencarian Repositori"
-                description="Temukan skripsi, tesis, dan karya ilmiah UNP"
-                delay="delay-200"
+                description="Temukan skripsi, tesis, dan karya ilmiah dengan mudah"
               />
-              <FeatureCard
+              <MobileFeatureCard
                 icon={<FaUniversity />}
                 title="Informasi Kampus"
-                description="Akses informasi tentang fakultas, jurusan, dan layanan UNP"
-                delay="delay-300"
+                description="Akses informasi tentang fakultas, jurusan, dan layanan kampus"
               />
             </div>
           </div>
@@ -75,16 +72,18 @@ export default function LandingPage() {
   );
 }
 
-function FeatureCard({ icon, title, description, delay }) {
+function MobileFeatureCard({ icon, title, description }) {
   return (
-    <div className={`bg-gray-50 dark:bg-gray-700 p-6 rounded-xl text-center transform transition-all duration-500 hover:scale-105 animate-fade-in ${delay}`}>
-      <div className="text-4xl text-blue-600 dark:text-blue-400 mb-4 flex justify-center hover:rotate-12 transition-transform duration-300">
+    <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-md flex items-center gap-4 transform transition-all duration-300 hover:scale-[1.02] animate-fade-in">
+      <div className="text-3xl text-blue-600 dark:text-blue-400 p-3 bg-blue-50 dark:bg-gray-600 rounded-full">
         {icon}
       </div>
-      <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-        {title}
-      </h3>
-      <p className="text-gray-600 dark:text-gray-300">{description}</p>
+      <div className="flex-1">
+        <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{description}</p>
+      </div>
     </div>
   );
 }
