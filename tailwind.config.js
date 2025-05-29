@@ -1,12 +1,16 @@
-/** @type {import('tailwindcss').Config} */
+import { fontFamily } from 'tailwindcss/defaultTheme'
+import inter from 'tailwindcss-font-inter'
+
 export default {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}", // sesuaikan dengan struktur proyek kamu
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+      },
+    },
   },
-  plugins: [],
+  plugins: [inter()],
 }
-
