@@ -7,21 +7,48 @@ const ChatBot = () => {
   const [input, setInput] = useState("");
   const chatEndRef = useRef(null);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { text: input, sender: "user" };
-    setMessages((prev) => [...prev, userMessage]);
+    const userText = input.trim();
+    setMessages((prev) => [...prev, { text: userText, sender: "user" }]);
     setInput("");
 
-    // Simulasi respon bot
-    setTimeout(() => {
-      const botMessage = {
-        text: `Bot menjawab: "${input}"`,
-        sender: "bot",
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    }, 800);
+    try {
+      const res = await fetch("https://bot-api.zpedia.eu.org/api/chat/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userText }),
+      });
+
+      if (!res.ok) throw new Error("Gagal menghubungi server");
+
+      const data = await res.json();
+      let reply = "";
+
+      if (data.type === "repository") {
+        reply = data.results?.length
+          ? data.results
+              .map(
+                (r) => `- ${r.title}\nLink: ${r.link}\nSkor: ${r.score}`
+              )
+              .join("\n\n")
+          : "Tidak ada hasil relevan.";
+      } else if (data.type === "info_UNP") {
+        reply = data.jawaban || "Tidak ada jawaban tersedia.";
+      } else {
+        reply = "Jenis respons tidak dikenali.";
+      }
+
+      setMessages((prev) => [...prev, { text: reply, sender: "bot" }]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { text: `Terjadi kesalahan: ${error.message}`, sender: "bot" },
+      ]);
+    }
   };
 
   useEffect(() => {
@@ -40,7 +67,7 @@ const ChatBot = () => {
             }`}
           >
             <div
-              className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm leading-relaxed ${
+              className={`whitespace-pre-line max-w-[75%] px-4 py-2 rounded-2xl text-sm leading-relaxed ${
                 msg.sender === "user"
                   ? "bg-blue-600 text-white rounded-br-none"
                   : "bg-gray-200 text-gray-900 rounded-bl-none"
