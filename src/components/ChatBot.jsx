@@ -185,7 +185,7 @@ export default function ChatUI() {
           </div>
           <div className="flex gap-2 flex-wrap justify-center sm:justify-end">
             <button onClick={downloadTxt} className="hover:underline">⬇️ Unduh TXT</button>
-        <button onClick={downloadJson} className="hover:underline">⬇️ Unduh JSON</button>
+   {  /* <button onClick={downloadJson} className="hover:underline">⬇️ Unduh JSON</button> */}
             <button
               onClick={() => setDarkMode(!darkMode)}
               className="hover:underline flex items-center gap-1"
