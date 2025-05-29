@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaRobot, FaSearch, FaUniversity, FaArrowRight, FaComments, FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import logo from "../assets/logo.png";
 
 export default function LandingPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,6 +33,20 @@ export default function LandingPage() {
       const newIndex = Math.round(scrollLeft / itemWidth);
       setActiveIndex(newIndex);
     }
+  };
+
+  // Add transition handler
+  const handleChatTransition = () => {
+    // First animate the background
+    document.body.style.transition = 'opacity 0.5s ease-in-out';
+    document.body.style.opacity = '0';
+    
+    // Then navigate after animation
+    setTimeout(() => {
+      navigate('/chat');
+      // Reset opacity after navigation
+      document.body.style.opacity = '1';
+    }, 500);
   };
 
   return (
@@ -62,13 +77,15 @@ export default function LandingPage() {
             <p className="text-lg sm:text-xl text-white/90 mb-12 animate-slide-up px-4">
               Asisten AI Universitas Nusantara PGRI Kediri
             </p>
-            <Link
-              to="/chat"
-              className="inline-flex items-center gap-3 bg-white text-blue-600 dark:bg-gray-800 dark:text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
+            <button
+              onClick={handleChatTransition}
+              className="inline-flex items-center gap-3 bg-white text-blue-600 dark:bg-gray-800 dark:text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform group"
             >
-              <FaComments className="text-xl" />
-              Mulai Chat
-            </Link>
+              <FaComments className="text-xl transition-transform duration-300 group-hover:rotate-12" />
+              <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-current after:transition-all group-hover:after:w-full">
+                Mulai Chat
+              </span>
+            </button>
           </div>
         </div>
 

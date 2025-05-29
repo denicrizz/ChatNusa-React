@@ -240,7 +240,8 @@ export default function ChatUI() {
 
     {/* Footer */}
     <footer className={`text-center py-3 text-sm ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"}`}>
-      Dibuat dengan ❤️ oleh <span className="font-semibold">Deni Kristanto</span>
+      Dibuat dengan <span className="text-red-500 animate-pulse">❤️</span> oleh{" "}
+      <span className="font-semibold">Deni Kristanto</span>
     </footer>
   </div>
 );
