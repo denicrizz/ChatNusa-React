@@ -25,11 +25,20 @@ const convertLinksToAnchors = (text) => {
 };
 
 export default function ChatUI() {
-  const [messages, setMessages] = useState([
-    { sender: "bot", text: "Halo! Ada yang bisa saya bantu?" },
-  ]);
+  // Initialize darkMode from localStorage
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : true;
+  });
+
+  // Initialize messages from localStorage or default message
+  const [messages, setMessages] = useState(() => {
+    const savedMessages = localStorage.getItem('chatMessages');
+    return savedMessages ? JSON.parse(savedMessages) : [
+      { sender: "bot", text: "Halo! Ada yang bisa saya bantu?" }
+    ];
+  });
   const [input, setInput] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [history, setHistory] = useState([]);
   const chatEndRef = useRef(null);
@@ -38,7 +47,9 @@ export default function ChatUI() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Save darkMode to localStorage whenever it changes
   useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
     if (darkMode) {
       document.documentElement.classList.add("dark");
     } else {
@@ -46,8 +57,9 @@ export default function ChatUI() {
     }
   }, [darkMode]);
 
+  // Save messages to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem("chatHistory", JSON.stringify(messages));
+    localStorage.setItem('chatMessages', JSON.stringify(messages));
   }, [messages]);
 
   const handleSend = async (e) => {
@@ -63,29 +75,38 @@ export default function ChatUI() {
       const data = await sendMessageToBot(userInput);
       await new Promise((r) => setTimeout(r, 1000));
 
-      const botReply =
-        data?.type === "repository"
-          ? data.results?.length
-            ? data.results
-                .map(
-                  (r) =>
-                    `- ${r.title}\nLink: ${r.link}\nSkor: ${r.score.toFixed(3)}`
-                )
-                .join("\n\n")
-            : "Tidak ada hasil relevan."
-          : data?.type === "info_UNP"
-          ? data.jawaban || "Tidak ada jawaban tersedia."
-          : "Jenis respons tidak dikenali.";
+      let botReply = "";
+      
+      if (data?.type === "repository" && data.results?.length) {
+        // Format hasil pencarian repositori dengan lebih rapi
+        botReply = `Berikut hasil pencarian:\n\n${data.results
+          .map((r, i) => 
+            `${i + 1}. ${r.title}\n   Link: ${r.link}\n   Skor: ${r.score.toFixed(3)}`
+          )
+          .join("\n\n")}`;
+      } else if (data?.type === "info_UNP") {
+        // Langsung tampilkan jawaban untuk informasi kampus
+        botReply = data.jawaban || "Maaf, tidak ada informasi yang tersedia.";
+      } else if (data?.type === "error") {
+        // Tangani pesan error
+        botReply = "Maaf, terjadi kesalahan. Silakan coba lagi.";
+      } else {
+        // Pesan default jika tipe tidak dikenali
+        botReply = "Maaf, saya tidak dapat memproses permintaan Anda. Silakan coba pertanyaan lain.";
+      }
 
       setMessages((prev) => {
         const copy = [...prev];
-        copy.pop();
+        copy.pop(); // Hapus pesan "Typing..."
         return [...copy, { sender: "bot", text: botReply }];
       });
     } catch (err) {
-      const copy = [...messages];
-      copy.pop();
-      setMessages([...copy, { sender: "bot", text: "Terjadi kesalahan. Silakan coba lagi." }]);
+      console.error(err);
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy.pop(); // Hapus pesan "Typing..."
+        return [...copy, { sender: "bot", text: "Terjadi kesalahan sistem. Silakan coba lagi." }];
+      });
     }
   };
 
@@ -128,16 +149,34 @@ export default function ChatUI() {
     link.click();
   };
 
+  // Toggle dark mode handler
+  const toggleDarkMode = () => {
+    setDarkMode(prevMode => !prevMode);
+  };
+
   return (
-  <div className={`w-full h-screen font-['Poppins'] ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"} flex flex-col`}>
-    {/* Navbar */}
-    <nav className="w-full bg-blue-600 dark:bg-gray-800 text-white p-4 flex items-center gap-3 shadow-md">
-      <Link to="/" className="hover:text-gray-200 transition">
-        <FaComments className="text-xl" />
-      </Link>
-      <Link to="/" className="hover:text-gray-200 transition">
-        <h1 className="text-xl font-semibold tracking-wide">ChatNusa</h1>
-      </Link>
+  <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
+    {/* Navbar - Fixed at top */}
+    <nav className="w-full bg-blue-600 dark:bg-gray-800 text-white p-4 flex items-center justify-between shadow-md">
+      <div className="flex items-center gap-3">
+        <Link to="/" className="hover:text-gray-200 transition">
+          <FaComments className="text-xl" />
+        </Link>
+        <Link to="/" className="hover:text-gray-200 transition">
+          <h1 className="text-xl font-semibold tracking-wide">ChatNusa</h1>
+        </Link>
+      </div>
+      <button
+        onClick={toggleDarkMode}
+        className="p-2 hover:bg-white/10 rounded-full transition-all duration-300 transform hover:scale-110"
+        aria-label={darkMode ? "Light Mode" : "Dark Mode"}
+      >
+        {darkMode ? (
+          <FaSun className="w-5 h-5 text-yellow-300" />
+        ) : (
+          <FaMoon className="w-5 h-5 text-gray-100" />
+        )}
+      </button>
     </nav>
 
     {/* Modal Riwayat */}
@@ -158,15 +197,15 @@ export default function ChatUI() {
       </div>
     )}
 
-    {/* Main Chat Area */}
-    <div className="flex-1 flex justify-center items-center p-1 sm:p-4">
-      <div className="w-full max-w-4xl h-[95%] sm:h-[90%] bg-white dark:bg-gray-800 rounded-xl shadow-xl flex flex-col overflow-hidden">
-        {/* Chat content */}
-        <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-4 min-h-0">
+    {/* Main chat container - Fills remaining height */}
+    <div className="flex-1 overflow-hidden p-4">
+      <div className="h-full max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl flex flex-col">
+        {/* Messages container - Scrollable */}
+        <div className="flex-1 overflow-y-auto p-4">
           {messages.map((msg, idx) => (
             <div
               key={idx}
-              className={`flex items-end gap-2 ${
+              className={`flex items-end gap-2 mb-4 ${
                 msg.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
@@ -196,42 +235,49 @@ export default function ChatUI() {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Input box */}
-        <div className="border-t px-1 py-2 sm:p-4 bg-gray-50 dark:bg-gray-700 flex gap-1 sm:gap-2 items-center">
-          <input
-            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-            placeholder="Ketik pesan..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend(e)}
-          />
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-all duration-300 hover:scale-105"
-            onClick={handleSend}
-            aria-label="Kirim pesan"
-          >
-            <FaPaperPlane className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 p-2 border-t bg-gray-100 dark:bg-gray-800 text-xs sm:text-sm text-gray-700 dark:text-white">
-          <div className="flex gap-2 flex-wrap justify-center sm:justify-start">
-            <button onClick={handleReset} className="hover:underline text-red-600 dark:text-red-400">
-              🔄 Reset Chat
-            </button>
-            <button onClick={handleLoadHistory} className="hover:underline">
-              📜 Lihat Riwayat
+        {/* Input and buttons - Fixed at bottom */}
+        <div className="border-t bg-gray-50 dark:bg-gray-700">
+          {/* Input box */}
+          <div className="p-4 flex gap-2">
+            <input
+              className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white text-gray-900 placeholder-gray-500 dark:placeholder-gray-400"
+              placeholder="Ketik pesan..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend(e)}
+            />
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-all duration-300 hover:scale-105"
+              onClick={handleSend}
+            >
+              <FaPaperPlane className="w-5 h-5" />
             </button>
           </div>
-          <div className="flex gap-2 flex-wrap justify-center sm:justify-end">
-            <button onClick={downloadTxt} className="hover:underline">⬇️ Unduh TXT</button>
-   {  /* <button onClick={downloadJson} className="hover:underline">⬇️ Unduh JSON</button> */}
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="hover:underline flex items-center gap-1"
+
+          {/* Action buttons */}
+          <div className="px-4 py-2 border-t bg-gray-100 dark:bg-gray-800 flex flex-wrap justify-between items-center gap-2">
+            <div className="flex gap-2">
+              <button 
+                onClick={handleReset}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 text-gray-900 dark:text-white"
+              >
+                <span className="text-red-500">🔄</span>
+                <span>Reset Chat</span>
+              </button>
+              <button 
+                onClick={handleLoadHistory}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 text-gray-900 dark:text-white"
+              >
+                <span className="text-blue-500">📜</span>
+                <span>Lihat Riwayat</span>
+              </button>
+            </div>
+            <button 
+              onClick={downloadTxt}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 text-gray-900 dark:text-white"
             >
-              {darkMode ? <FaSun /> : <FaMoon />} {darkMode ? "Light Mode" : "Dark Mode"}
+              <span className="text-green-500">⬇️</span>
+              <span>Unduh TXT</span>
             </button>
           </div>
         </div>
@@ -239,7 +285,7 @@ export default function ChatUI() {
     </div>
 
     {/* Footer */}
-    <footer className={`text-center py-3 text-sm ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"}`}>
+    <footer className="text-center py-3 text-sm bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
       Dibuat dengan <span className="text-red-500 animate-pulse">❤️</span> oleh{" "}
       <span className="font-semibold">Deni Kristanto</span>
     </footer>

@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaRobot, FaSearch, FaUniversity, FaArrowRight, FaComments, FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
+import { FaRobot, FaSearch, FaUniversity, FaArrowRight, FaComments, FaGithub, FaLinkedin, FaInstagram, FaSun, FaMoon } from "react-icons/fa";
 import logo from "../assets/logo.png";
 
 export default function LandingPage() {
   const [activeIndex, setActiveIndex] = useState(0);
+  // Initialize darkMode from localStorage or default to true
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : true;
+  });
   const carouselRef = useRef(null);
   const navigate = useNavigate();
+
+  // Add effect to save darkMode to localStorage
+  useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+    // Optional: Add data-theme attribute to html element for global styling
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,8 +61,12 @@ export default function LandingPage() {
     }, 500);
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(prevMode => !prevMode);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-b ${darkMode ? 'from-gray-800 to-gray-900' : 'from-blue-500 to-blue-700'} relative overflow-hidden`}>
       {/* Mobile-friendly background pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
@@ -62,7 +78,20 @@ export default function LandingPage() {
 
       <div className="relative">
         {/* Mobile-first Hero Section */}
-        <div className="container mx-auto px-4 pt-12 pb-8">
+        <div className="container mx-auto px-4 pt-6">
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 hover:bg-white/10 rounded-full transition-all duration-300 transform hover:scale-110"
+              aria-label={darkMode ? "Light Mode" : "Dark Mode"}
+            >
+              {darkMode ? (
+                <FaSun className="w-5 h-5 text-yellow-300" />
+              ) : (
+                <FaMoon className="w-5 h-5 text-white" />
+              )}
+            </button>
+          </div>
           <div className="text-center backdrop-blur-sm rounded-2xl p-4">
             <div className="flex flex-col items-center justify-center gap-4 mb-8">
               <img
