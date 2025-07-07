@@ -1,23 +1,36 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaRobot, FaSearch, FaUniversity, FaArrowRight, FaComments, FaGithub, FaLinkedin, FaInstagram, FaSun, FaMoon } from "react-icons/fa";
+import {
+  FaRobot,
+  FaSearch,
+  FaUniversity,
+  FaArrowRight,
+  FaComments,
+  FaGithub,
+  FaLinkedin,
+  FaInstagram,
+  FaSun,
+  FaMoon,
+  FaTelegramPlane,
+  FaAndroid,
+} from "react-icons/fa";
 import logo from "../assets/logo.png";
 
 export default function LandingPage() {
   const [activeIndex, setActiveIndex] = useState(0);
-  // Initialize darkMode from localStorage or default to true
   const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('darkMode');
+    const savedMode = localStorage.getItem("darkMode");
     return savedMode ? JSON.parse(savedMode) : true;
   });
   const carouselRef = useRef(null);
   const navigate = useNavigate();
 
-  // Add effect to save darkMode to localStorage
   useEffect(() => {
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
-    // Optional: Add data-theme attribute to html element for global styling
-    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+    document.documentElement.setAttribute(
+      "data-theme",
+      darkMode ? "dark" : "light"
+    );
   }, [darkMode]);
 
   useEffect(() => {
@@ -25,15 +38,15 @@ export default function LandingPage() {
       if (carouselRef.current) {
         const nextIndex = (activeIndex + 1) % 3;
         const scrollWidth = carouselRef.current.scrollWidth / 3;
-        
+
         carouselRef.current.scrollTo({
           left: scrollWidth * nextIndex,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
-        
+
         setActiveIndex(nextIndex);
       }
-    }, 3000); // Change slide every 3 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [activeIndex]);
@@ -47,37 +60,33 @@ export default function LandingPage() {
     }
   };
 
-  // Add transition handler
   const handleChatTransition = () => {
-    // First animate the background
-    document.body.style.transition = 'opacity 0.5s ease-in-out';
-    document.body.style.opacity = '0';
-    
-    // Then navigate after animation
+    document.body.style.transition = "opacity 0.5s ease-in-out";
+    document.body.style.opacity = "0";
+
     setTimeout(() => {
-      navigate('/chat');
-      // Reset opacity after navigation
-      document.body.style.opacity = '1';
+      navigate("/chat");
+      document.body.style.opacity = "1";
     }, 500);
   };
 
   const toggleDarkMode = () => {
-    setDarkMode(prevMode => !prevMode);
+    setDarkMode((prevMode) => !prevMode);
   };
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${darkMode ? 'from-gray-800 to-gray-900' : 'from-blue-500 to-blue-700'} relative overflow-hidden`}>
-      {/* Mobile-friendly background pattern */}
+    <div
+      className={`min-h-screen bg-gradient-to-b ${
+        darkMode ? "from-gray-800 to-gray-900" : "from-blue-500 to-blue-700"
+      } relative overflow-hidden`}
+    >
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      
-      {/* Mobile-optimized glowing orbs */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-10 -left-10 w-48 h-48 bg-blue-300/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 -right-10 w-72 h-72 bg-purple-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       <div className="relative">
-        {/* Mobile-first Hero Section */}
         <div className="container mx-auto px-4 pt-6">
           <div className="flex justify-end mb-4">
             <button
@@ -118,14 +127,13 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Mobile-friendly Features Section */}
         <div className="bg-white/95 dark:bg-gray-800/95 py-8 sm:py-12 rounded-t-[2.5rem] shadow-lg">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-gray-900 dark:text-white">
               Fitur Utama
             </h2>
             <div className="relative max-w-5xl mx-auto">
-              <div 
+              <div
                 ref={carouselRef}
                 onScroll={handleScroll}
                 className="flex flex-nowrap gap-4 overflow-x-auto pb-4 snap-x scrollbar-none scroll-smooth sm:justify-center"
@@ -152,14 +160,13 @@ export default function LandingPage() {
                   />
                 </div>
               </div>
-              
-              {/* Show dots only on mobile */}
+
               <div className="flex justify-center gap-2 mt-4 sm:hidden">
                 {[0, 1, 2].map((index) => (
                   <div
                     key={index}
                     className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                      index === activeIndex ? 'bg-blue-500' : 'bg-blue-300'
+                      index === activeIndex ? "bg-blue-500" : "bg-blue-300"
                     }`}
                   />
                 ))}
@@ -167,9 +174,38 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+
+        {/* Versi Telegram & Android */}
+        <div className="text-center mt-16 mb-8">
+          <p className="text-white/80 text-sm sm:text-base mb-4">
+            Tersedia juga versi:
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="https://t.me/chatnusa_bot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full shadow-md transition-all duration-300 hover:scale-105"
+            >
+              <FaTelegramPlane className="text-lg animate-pulse" />
+              <span className="font-medium">ChatNusa via Telegram</span>
+            </a>
+
+            <a
+              href="https://example.com/chatnusa.apk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full shadow-md transition-all duration-300 hover:scale-105"
+            >
+              <FaAndroid className="text-lg animate-bounce" />
+              <span className="font-medium">ChatNusa untuk Android</span>
+            </a>
+          </div>
+        </div>
       </div>
 
-      {/* Footer with Social Links */}
+      {/* Footer */}
       <footer className="text-center py-6 text-white/80 text-sm backdrop-blur-sm">
         <div className="flex flex-col items-center gap-4">
           <div className="flex gap-6">
@@ -199,8 +235,8 @@ export default function LandingPage() {
             </a>
           </div>
           <div>
-            Dibuat dengan <span className="text-red-500 animate-pulse">❤️</span> oleh{" "}
-            <span className="font-semibold">Deni Kristanto</span>
+            Dibuat dengan <span className="text-red-500 animate-pulse">❤️</span>{" "}
+            oleh <span className="font-semibold">Deni Kristanto</span>
           </div>
         </div>
       </footer>
