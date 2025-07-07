@@ -193,7 +193,7 @@ export default function LandingPage() {
             </a>
 
             <a
-              href="https://example.com/chatnusa.apk"
+              href="https://drive.google.com/file/d/16NBSlUf7cCQrM-6CoNrv8vISWga07OML/view?usp=drive_link"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full shadow-md transition-all duration-300 hover:scale-105"
